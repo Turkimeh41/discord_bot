@@ -4,8 +4,16 @@ const memberSchema = new mongoose.Schema({
   _id: String,
   username: String,
   avatarURL: String,
-  //Type of subscription none, ChatGPT or MidJourney or both chatGPT and MidJourney
-  subscription: Number,
+  subscription: {
+    GPT4: {
+      subbed: Boolean,
+      subbedDate: Date,
+    },
+    midJourney: {
+      subbed: Boolean,
+      subbedDate: Date,
+    },
+  },
   joinedAt: Date,
 });
 

@@ -17,7 +17,7 @@ const addMember = async (id, username, avatarURL) => {
     _id: id,
     username: username,
     avatarURL: avatarURL,
-    subscription: false,
+    subscription: { GPT4: { subbed: false, subbedDate: null }, midJourney: { subbed: false, subbedDate: null } },
     subscribed: 0,
     joinedAt: Date.now(),
   });
