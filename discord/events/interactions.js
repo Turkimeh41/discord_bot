@@ -1,7 +1,8 @@
 require("dotenv").config();
 const db = require("../../database/database.js");
 const { createImage } = require("../../openAI/openai.js");
-const { ticketWidgetSetup } = require("../../discord/utils/buttons.js");
+const { ticketWidgetSetup, chatGPTBuyPrompt, midJourneyBuyPrompt } = require("../../discord/utils/buttons.js");
+const { ChannelType, PermissionsBitField } = require("discord.js");
 
 const interactionEvent = (interaction) => {
   console.log("interaction has been created, proceeding with a reply...");
@@ -37,23 +38,59 @@ async function buttonInteractionHandler(interaction) {
 
     //Buying Chat GPT
   } else if (interaction.customId === "1") {
-    console.log(interaction.member);
-    const data = await ticketWidgetSetup();
-    const embed = data["embeds"];
-    const row = data["components"];
-    interaction.member.user.send("Wasap nigga");
+    const postChannel = interaction.guild.channels.cache.find((c) => c.name === `ticket-${interaction.user.id}`);
+    //ticket already there
+    if (postChannel != null) {
+      return await interaction.reply({ content: "لديك تذكرة مفتوحة, ارجوا اغلاقهل لفتح تذكرة جديدة 😁", ephemeral: true });
+    }
+    let channel = await interaction.guild.channels.create({
+      name: `ticket-${interaction.user.id}`,
+      type: ChannelType.GuildText,
+      parent: `${"1134487589110415420"}`,
+      permissionOverwrites: [
+        { id: interaction.guild.id, deny: [PermissionsBitField.Flags.ViewChannel] },
+        { id: interaction.user.id, allow: [PermissionsBitField.Flags.ViewChannel] },
+      ],
+    });
+
+    const data = chatGPTBuyPrompt(0);
+
+    channel.send({ embeds: [data.embed], components: [data.row] });
+    await interaction.reply({ content: `تم فتح التذكرة رقم  ${channel}`, ephemeral: true });
 
     console.log("شراء ل CHATGPT");
   }
   //Buying midjourney
   else if (interaction.customId === "2") {
-    console.log("شراء ل MidJourney");
-    interaction.reply("Midjourney");
+    const postChannel = interaction.guild.channels.cache.find((c) => c.name === `ticket-${interaction.user.id}`);
+    //ticket already there
+    if (postChannel != null) {
+      return await interaction.reply({ content: "لديك تذكرة مفتوحة, ارجوا اغلاقهل لفتح تذكرة جديدة 😁", ephemeral: true });
+    }
+    let channel = await interaction.guild.channels.create({
+      name: `ticket-${interaction.user.id}`,
+      type: ChannelType.GuildText,
+      parent: `${"1134487589110415420"}`,
+    });
+
+    const data = midJourneyBuyPrompt(0);
+
+    channel.send({ embeds: [data.embed], components: [data.row] });
+    await interaction.reply({ content: `تم فتح التذكرة رقم  ${channel}`, ephemeral: true });
+
+    if (interaction.customId === "2.1") {
+    } else if (interaction.customId === "2.2") {
+    } else if (interaction.customId === "2.3") {
+    }
   }
+
   //buying Both
-  else {
+  else if (interaction.customId === "3") {
     interaction.reply("Both");
     console.log("شراء ل Both");
+  } else if (interaction.customId === "close") {
+    const channel = interaction.guild.channels.cache.find((c) => c.name === `ticket-${interaction.user.id}`);
+    await channel.delete();
   }
 }
 

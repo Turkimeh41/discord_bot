@@ -38,7 +38,44 @@ const ticketWidgetSetup = async () => {
   return { embeds: embed, components: row };
 };
 
-const paymentWidgetSend = async (url) => {};
+function chatGPTBuyPrompt(position) {
+  if (position == 0) {
+    const embed = new EmbedBuilder()
+      .setTitle("GPT 4.0")
+      .setColor("Green")
+      .setDescription("هل من الاكيد تريد شراء اشتراك GPT 4 لمدة يوم واحد؟\n\nللأستمرار اضغط الاخضر او الاحمر لأغلاق التذكرة");
 
+    const row = new ActionRowBuilder();
+
+    row.components.push(new ButtonBuilder().setCustomId("1.1").setLabel("الاستــمرار").setStyle(ButtonStyle.Success));
+
+    row.components.push(new ButtonBuilder().setCustomId("close").setLabel("الأغـــلاق").setStyle(ButtonStyle.Danger));
+
+    return { embed: embed, row: row };
+  } else if (position == 1) {
+  }
+}
+
+function midJourneyBuyPrompt(position) {
+  if (position == 0) {
+    const embed = new EmbedBuilder()
+      .setTitle("Midjourney")
+      .setColor("Green")
+      .setDescription(
+        "هل من الاكيد تريد شراء اشتراك midJourney المخصص للصور الذكية لمدة يوم واحد؟\n\nللأستمرار اضغط الاخضر او الاحمر لأغلاق التذكرة"
+      );
+
+    const row = new ActionRowBuilder();
+
+    row.components.push(new ButtonBuilder().setCustomId("2.1").setLabel("الاستــمرار").setStyle(ButtonStyle.Success));
+
+    row.components.push(new ButtonBuilder().setCustomId("close").setLabel("الأغـــلاق").setStyle(ButtonStyle.Danger));
+
+    return { embed: embed, row: row };
+  }
+}
+
+module.exports.midJourneyBuyPrompt = midJourneyBuyPrompt;
+module.exports.chatGPTBuyPrompt = chatGPTBuyPrompt;
 module.exports.verifactionWidgetSetup = verifactionWidgetSetup;
 module.exports.ticketWidgetSetup = ticketWidgetSetup;

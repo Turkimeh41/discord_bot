@@ -14,6 +14,7 @@ const initClient = async () => {
   try {
     console.log("Logging in discord bot...");
     //Bot Becomes ONLINE
+    console.log(process.env.DiscordBot);
     client.login(process.env.DiscordBot);
     console.log("logged in!");
   } catch (err) {
